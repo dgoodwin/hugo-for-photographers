@@ -1,0 +1,74 @@
+<div class="photo-container" id="lightgallery">
+{{- $context := . -}}
+{{ $photodir := (.Get 0) }}
+{{ $photoglob := printf "%s/**.jpg" $photodir }}
+{{- range $src := .Page.Resources.Match $photoglob -}}
+  {{- $title := (replace .Title "gallery/" "") -}}
+
+  {{- $exifJson := $context.Page.Resources.GetMatch (printf "%s.json" .Name) -}}
+
+  {{- $exif := slice -}}
+  {{- with $exifJson -}}
+    {{- with (index (.Content | unmarshal) 0) -}}
+      {{- with .Title -}}{{- $title = . -}}{{- end -}}
+      {{- with .Make2 -}}{{- $exif = $exif | append (printf "Make: %s" .) -}}{{- end -}}
+      {{- with .Model -}}{{- $exif = $exif | append (printf "%s" .) -}}{{- end -}}
+      {{- with .LensSpec -}}{{- $exif = $exif | append (printf "%s" .) -}}{{- end -}}
+      {{- with .FNumber -}}{{- $exif = $exif | append (printf "ƒ/%.1f" .) -}}{{- end -}}
+      {{- with .FocalLength -}}{{- $exif = $exif | append (printf "%s" .) -}}{{- end -}}
+      {{- with .ExposureTime -}}
+        {{- if eq (printf "%T" .) "float64" -}}
+          {{- $exif = $exif | append (printf "%.1f s" .) -}}
+        {{- else -}}
+          {{- $exif = $exif | append (printf "%s s" .) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- with .ISO -}}{{- $exif = $exif | append (printf "ISO %.0f" .) -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  <div class="photo-item" data-src="{{ .Permalink }}" data-sub-html="<h4>{{ $title }}</h4><p>{{ delimit $exif " | " }}</p>">
+    {{- $crop := default "smart" -}}
+    {{- $tinyw := printf "200x100 %s Lanczos q95" $crop -}}
+    {{- $smallw := printf "500x300 %s Lanczos q90" $crop -}}
+    {{- $mediumw := printf "1200x900 %s Lanczos q40" $crop -}}
+    {{- $largew := printf "1600x1200 %s Lanczos q30" $crop -}}
+
+    {{- $srcset := slice -}}
+
+    {{- $tiny := ($src.Fill $tinyw) -}}
+    {{- $srcset = $srcset | append (printf "%s 500w" $tiny.Permalink) -}}
+    {{- $img := dict "src" $tiny.RelPermalink "w" $tiny.Width "h" $src.Height -}}
+
+    {{- if and (ge $src.Width "800") (ne $src.MediaType.SubType "png") -}}
+        {{- $small := ($src.Fill $smallw) -}}
+        {{- $srcset = $srcset | append (printf "%s 800w" $small.Permalink) -}}
+        {{- $img = dict "src" $small.RelPermalink "w" $small.Width "h" $small.Height -}}
+    {{- end -}}
+    {{- if and (ge $src.Width "1200") (ne $src.MediaType.SubType "png") -}}
+        {{- $medium := ($src.Fill $mediumw) -}}
+        {{- $srcset = $srcset | append (printf "%s 1199w" $medium.Permalink) -}}
+    {{- end -}}
+    {{- if and (ge $src.Width "1600") (ne $src.MediaType.SubType "png") -}}
+        {{- $large := ($src.Fill $largew) -}}
+        {{- $srcset = $srcset | append (printf "%s 1600w" $large.Permalink) -}}
+    {{- end -}}
+
+    {{- $sizes := "(min-width: 900px) 420px, (min-width: 684px) 310px, calc(100vw - 40px)" -}}
+
+    <a href="{{ .Permalink }}">
+    <picture>
+    <source type="{{ $src.MediaType }}" sizes="{{ $sizes }}" srcset='{{ delimit $srcset ", " }}'>
+    <img loading="lazy"
+         class="center"
+         src="{{ $img.src }}"
+         width="{{ $img.w }}"
+         height="{{ $img.h }}"
+         alt="{{ $title }}"/>
+    </picture>
+    </a>
+  </div>
+{{ end }}
+
+</div>
+
