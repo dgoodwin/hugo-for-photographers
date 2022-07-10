@@ -10,4 +10,4 @@ cover:
 ---
 
 
-{{< photoshoot "gallery" >}}
+{{< gallery "gallery" >}}
