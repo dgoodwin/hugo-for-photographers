@@ -32,29 +32,29 @@
   {{- end -}}
 
     {{- $crop := default "smart" -}}
-    {{- $tinyw := printf "x100 %s Lanczos q95" $crop -}}
-    {{- $smallw := printf "x300 %s Lanczos q90" $crop -}}
-    {{- $mediumw := printf "x600 %s Lanczos q40" $crop -}}
-    {{- $largew := printf "x900 %s Lanczos q30" $crop -}}
+    {{- $tinyw := printf "x600 %s Lanczos q95" $crop -}}
+    {{- $smallw := printf "x900 %s Lanczos q95" $crop -}}
+    {{- $mediumw := printf "x1200 %s Lanczos q95" $crop -}}
+    {{- $largew := printf "x1600 %s Lanczos q95" $crop -}}
 
     {{- $srcset := slice -}}
 
     {{- $tiny := ($src.Resize $tinyw) -}}
-    {{- $srcset = $srcset | append (printf "%s 100w" $tiny.Permalink) -}}
+    {{- $srcset = $srcset | append (printf "%s 600w" $tiny.Permalink) -}}
     {{- $img := dict "src" $tiny.RelPermalink "w" $tiny.Width "h" $src.Height -}}
 
-    {{- if and (ge $src.Width "300") (ne $src.MediaType.SubType "png") -}}
+    {{- if and (ge $src.Width "900") (ne $src.MediaType.SubType "png") -}}
         {{- $small := ($src.Resize $smallw) -}}
-        {{- $srcset = $srcset | append (printf "%s 300w" $small.Permalink) -}}
+        {{- $srcset = $srcset | append (printf "%s 900w" $small.Permalink) -}}
         {{- $img = dict "src" $small.RelPermalink "w" $small.Width "h" $small.Height -}}
     {{- end -}}
-    {{- if and (ge $src.Width "600") (ne $src.MediaType.SubType "png") -}}
+    {{- if and (ge $src.Width "1200") (ne $src.MediaType.SubType "png") -}}
         {{- $medium := ($src.Resize $mediumw) -}}
-        {{- $srcset = $srcset | append (printf "%s 600w" $medium.Permalink) -}}
+        {{- $srcset = $srcset | append (printf "%s 1200w" $medium.Permalink) -}}
     {{- end -}}
-    {{- if and (ge $src.Width "900") (ne $src.MediaType.SubType "png") -}}
+    {{- if and (ge $src.Width "1600") (ne $src.MediaType.SubType "png") -}}
         {{- $large := ($src.Resize $largew) -}}
-        {{- $srcset = $srcset | append (printf "%s 900w" $large.Permalink) -}}
+        {{- $srcset = $srcset | append (printf "%s 1600w" $large.Permalink) -}}
     {{- end -}}
 
     {{- $sizes := "(min-width: 700px) 220px, (min-width: 684px) 110px, 100vw" -}}
