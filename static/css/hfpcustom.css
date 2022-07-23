@@ -1,0 +1,4 @@
+/* overriding the block setting in PaperMod reset.css */
+img {
+    display: inline;
+}
