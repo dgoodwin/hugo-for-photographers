@@ -1,0 +1,55 @@
+<div class="pswp-gallery" id="my-gallery">
+{{- $context := . -}}
+{{ $photodir := (.Get 0) }}
+{{ $photoglob := printf "%s/**.jpg" $photodir }}
+{{- range $src := .Page.Resources.Match $photoglob -}}
+  {{- $title := (replace .Title "gallery/" "") -}}
+
+    {{- $crop := default "smart" -}}
+    {{- $tinyw := printf "x600 %s Lanczos q95" $crop -}}
+    {{- $smallw := printf "x900 %s Lanczos q95" $crop -}}
+    {{- $mediumw := printf "x1200 %s Lanczos q95" $crop -}}
+    {{- $largew := printf "x1600 %s Lanczos q95" $crop -}}
+
+    {{- $srcset := slice -}}
+
+    {{- $tiny := ($src.Resize $tinyw) -}}
+    {{- $srcset = $srcset | append (printf "%s 600w" $tiny.Permalink) -}}
+    {{- $img := dict "src" $tiny.RelPermalink "w" $tiny.Width "h" $src.Height -}}
+    {{- $finalLink := "" -}}
+
+    {{- if and (ge $src.Width "900") (ne $src.MediaType.SubType "png") -}}
+        {{- $small := ($src.Resize $smallw) -}}
+        {{- $srcset = $srcset | append (printf "%s 900w" $small.Permalink) -}}
+        {{- $img = dict "src" $small.RelPermalink "w" $small.Width "h" $small.Height -}}
+    {{- end -}}
+    {{- if and (ge $src.Width "1200") (ne $src.MediaType.SubType "png") -}}
+        {{- $medium := ($src.Resize $mediumw) -}}
+        {{- $srcset = $srcset | append (printf "%s 1200w" $medium.Permalink) -}}
+    {{- end -}}
+    {{- if and (ge $src.Width "1600") (ne $src.MediaType.SubType "png") -}}
+        {{- $large := ($src.Resize $largew) -}}
+        {{- $srcset = $srcset | append (printf "%s 1600w" $large.Permalink) -}}
+        {{- $finalLink = $large.Permalink -}}
+    {{- end -}}
+
+    {{- $sizes := "(min-width: 700px) 220px, (min-width: 684px) 110px, 100vw" -}}
+
+    <a
+            href="{{ printf "%s" $finalLink }}"
+      data-pswp-width="1875"
+      data-pswp-height="2500"
+      target="_blank"
+    >
+      <img
+              data-pswp-srcset='{{ delimit $srcset ", " }}'
+              sizes="{{ $sizes }}"
+              src="{{ printf "%s" $img.src }}"
+        alt=""
+      />
+    </a>
+
+{{ end }}
+
+</div>
+
