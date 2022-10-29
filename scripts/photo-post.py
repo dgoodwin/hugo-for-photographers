@@ -8,11 +8,12 @@ import sys
 # a nautilus script we only get relative filenames.
 orig_cwd = os.getcwd()
 
-if not 'HUGO_SITE_DIR' in os.environ:
-    print("ERROR: HUGO_SITE_DIR environment variable not defined")
-    sys.exit(1)
+# if not 'HUGO_SITE_DIR' in os.environ:
+    # print("ERROR: HUGO_SITE_DIR environment variable not defined")
+    # sys.exit(1)
 
-site_dir = os.environ["HUGO_SITE_DIR"]
+#site_dir = os.environ["HUGO_SITE_DIR"]
+site_dir = "/home/dev/src/rmrf/"
 os.chdir(site_dir) # for hugo binary to work
 
 photo_files = sys.argv[1:]
@@ -38,6 +39,8 @@ for pf in photo_files:
     else:
         src = os.path.join(orig_cwd, pf)
     shutil.copyfile(src, os.path.join(post_dir, 'gallery', os.path.basename(pf)))
+    # Also copy to my best of 2022 gallery
+    shutil.copyfile(src, os.path.join(post_dir, '../../bestof/2022/images', os.path.basename(pf)))
 
 # massage the file for our input:
 os.system("sed -i 's/COVERIMAGE/gallery\/%s/g' %s" % (os.path.basename(photo_files[0]),
