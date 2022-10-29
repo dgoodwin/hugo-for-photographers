@@ -9,5 +9,8 @@ cover:
   relative: false # To use relative path for cover image, used in hugo Page-bundles
 ---
 
+Description goes here.
 
-{{< gallery "gallery" >}}
+<!--more-->
+
+{{< gallery match="gallery/*" >}}
