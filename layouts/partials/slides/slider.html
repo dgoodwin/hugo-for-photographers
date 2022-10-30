@@ -44,13 +44,14 @@
                     {{ end }}
                     <div class="center">
                         <div class="image-box {{ if eq ($.scratch.Get "columnsCount") 1 }} alittle {{ end }}">
-                            <img
-                            src="{{ $img.RelPermalink }}"
-                            loading="lazy"
-                            width="{{ $img.Width }}"
-                            height="{{ $img.Height }}"
-                            onclick="openSlider();currentSlide({{ (index $row "loopCount") }})"
-                            />
+                            <a href="{{ (index $row "post").RelPermalink }}">
+                                <img
+                                    src="{{ $img.RelPermalink }}"
+                                    loading="lazy"
+                                    width="{{ $img.Width }}"
+                                    height="{{ $img.Height }}"
+                                />
+                            </a>
                         </div>
                     </div>
                 {{ end }}
