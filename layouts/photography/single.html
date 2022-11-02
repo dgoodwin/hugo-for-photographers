@@ -10,11 +10,6 @@
       {{- if .Draft }}<sup><span class="entry-isdraft">&nbsp;&nbsp;[draft]</span></sup>{{- end }}
     </h1>
 
-    <!-- Display our image via eternity slide -->
-    <section class="section">
-        {{ partial "slides/slide.html" (dict "disableFullheight" true "ctx" .) }}
-    </section>
-
     {{- if .Description }}
     <div class="post-description">
       {{ .Description }}

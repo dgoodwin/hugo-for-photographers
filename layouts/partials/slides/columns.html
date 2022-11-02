@@ -35,7 +35,7 @@
 {{ $posts := slice }}
 
 <!-- TODO: hardcoded, need to pass in our current section -->
-{{- $posts = where site.AllPages ".Section" "photography2" }}
+{{- $posts = where site.AllPages ".Section" "photography" }}
 
 {{ $postsCount := len ($posts) }}
 {{ if lt $postsCount $columnsCount}}
