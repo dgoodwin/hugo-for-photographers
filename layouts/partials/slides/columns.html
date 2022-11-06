@@ -35,7 +35,12 @@
 {{ $posts := slice }}
 
 <!-- TODO: hardcoded, need to pass in our current section -->
-{{- $posts = where site.AllPages ".Section" "photography" }}
+{{- $posts = where site.RegularPages ".Section" "photography" }}
+
+{{- $postLimit := 1000000 }}
+{{ if $.limit }}
+  {{- $postLimit = $.limit }}
+{{ end }}
 
 {{ $postsCount := len ($posts) }}
 {{ if lt $postsCount $columnsCount}}
@@ -47,7 +52,7 @@
 {{ $loopCount := 1 }}
 {{ $loopFlag := 0 }}
 {{ $posts = sort $posts "Page" "desc" }}
-{{ range $i, $post := $posts }}
+{{ range $i, $post := first $postLimit $posts }}
 	{{ if gt $loopFlag (sub $columnsCount 1) }}
 		{{ $loopFlag = 0 }}
 	{{ end }}
